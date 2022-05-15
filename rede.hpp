@@ -4,11 +4,13 @@
 #include <cmath>
 #include <cstddef>
 #include <cstdlib>
+#include <fstream>
 #include <iostream>
 #include <vector>
 using std::cout;
+using std::ifstream;
+using std::ofstream;
 using std::vector;
-
 
 typedef vector<Neuronio> Camada;
 
@@ -110,6 +112,40 @@ public:
       resultados.push_back(Camadas.back()[n].Saida);
     }
   };
+  void SalvarParaArquivo() {
+    ofstream arq("vareaveis.txt");
+    int ncamadas = Camadas.size();
+
+    for (int i = 0; i < ncamadas; i++) {
+      arq << Camadas[i].size()-1 << " ";
+    }
+    arq<<"\n";
+   // arq << " # TOPOLOGIA\n";
+    for (int c = 0; c < ncamadas; c++) {
+      int qntNeu = Camadas[c].size();
+      for (int n = 0; n < qntNeu; n++) {
+        arq << c + 1 << " " << n + 1 << "\n";
+        Neuronio &atual = Camadas[c][n];
+        arq << "\t" << atual.Saida << " " << atual.PesosSaida.size()
+            << " \n";
+        for (int l = 0; l < atual.PesosSaida.size(); l++) {
+
+          arq << "\t" << atual.PesosSaida[l].peso << " "
+              << atual.PesosSaida[l].deltaPeso << " \n";
+        }
+        arq << "\t" << atual.gradiente << " \n";
+      }
+    }
+  }
+  void LerDoArquivo() { 
+    ifstream arq("vareaveis.txt"); 
+    for(int i=0;i<30;i++)
+    {
+      double v;
+      arq>>v;
+      cout<<v<<"\n";
+
+    }}
 };
 double Neuronio::eta = 0.15;
 double Neuronio::alpha = 0.5;
