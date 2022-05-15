@@ -1,5 +1,6 @@
 #include <cassert>
 #include <cmath>
+#include <cstddef>
 #include <cstdlib>
 #include <iostream>
 #include <vector>
@@ -81,7 +82,7 @@ class Rede {
 public:
   double erro = 0.0;
   double erroMedioRecente;
-  double fatorDeErroRecente;
+  double fatorDeErroRecente = 50.0;
   vector<Camada> Camadas;
 
   // CRIAR A REDE NEURAL
@@ -95,7 +96,7 @@ public:
       // ADICIONAR NEURORIOS NA CAMADA RECEM CRIADA
       for (int ii = 0; ii <= topologia[i]; ii++) {
         Camadas.back().push_back(Neuronio(numSaidas, ii));
-        cout << "Neuronio " << ii << " criado\n";
+       // cout << "Neuronio " << ii << " criado\n";
       }
       Camadas.back().back().Saida = 1.0;
     }
@@ -130,17 +131,20 @@ public:
       // calcula o erro e adiciona ao erro total da REDE
       double erroNeuronio = esperados[i] - Saida[i].Saida;
       erro += erroNeuronio * erroNeuronio;
+      cout <<"Chute "<<Saida[i].Saida<<" Esperado "<<esperados[i]<< " erro  = "
+           << erroNeuronio << "\n";
     }
-    erro = sqrt(Saida.size() - 1); // media RMS
-
+    erro = sqrt(erro/(Saida.size() - 1)); // media RMS
     // medir media recente de precisao
     erroMedioRecente = (erroMedioRecente * fatorDeErroRecente + erro) /
                        (fatorDeErroRecente + 1.0);
+    cout << "RMS = " << erro <<" ErroMedioRecente = "<< erroMedioRecente <<"\n";
     // calcular grandiente da camada de saida
     for (int i = 0; i < Saida.size() - 1; i++) {
       Saida[i].calcGradiente(esperados[i]);
     }
     // calcular gradiente das camadas ocultas
+    //cout << "calculando grandiente oculto \n";
     for (int i = Camadas.size() - 2; i > 0;
          i--) // para todas as camadas da penultima para primeira
     {
@@ -153,18 +157,19 @@ public:
       }
     }
     // Atualizar peso  das ligações para todas as camadas, da saida para entrada
+    //cout << "atualizando pesos \n";
     for (int i = Camadas.size() - 1; i > 0; i--) // para todas as camadas
     {
       Camada &atual = Camadas[i];
       Camada &anterior = Camadas[i - 1];
-      for (int n = 0; n < atual.size();
+      for (int n = 0; n < atual.size() - 1;
            n++) // para todos os neuronios da camada atual
       {
         atual[n].AtualizarPesoEntradas(anterior);
       }
     }
   };
-  void getResults(vector<double> &resultados) {
+  void PegarResultados(vector<double> &resultados) {
     resultados.clear();
     for (int n = 0; n < Camadas.back().size() - 1; n++) {
       resultados.push_back(Camadas.back()[n].Saida);
@@ -174,20 +179,31 @@ public:
 double Neuronio::eta = 0.15;
 double Neuronio::alpha = 0.5;
 int main() {
+    srand(time(NULL));
+  // TESTANDO A REDE
   vector<unsigned int> topologia;
-  topologia.push_back(3); // 3 NEURONIOS PARA CAMADA DE ENTRADA
-  topologia.push_back(2); // 2 NEURONIOS NA CAMADA OCULTA
+  topologia.push_back(2); // 2 NEURONIOS PARA CAMADA DE ENTRADA
+  topologia.push_back(4); // 4 NEURONIOS NA CAMADA OCULTA
   topologia.push_back(1); // 1 NEURORIO NA CAMADA DE SAIDA
   Rede Arede(topologia);
+ /*  vector<vector<double>> entradas = {{1, 1}, {0, 1}, {1, 0}, {0, 0}};//valores para or
+  vector<vector<double>> esperados = {{1}, {1}, {1}, {0}};//valores para or
+ */
+/*   vector<vector<double>> entradas =  {{1, 1}, {0, 1}, {1, 0}, {0, 0}};//valores para XOR
+  vector<vector<double>> esperados = {{0},    {1},    {1},    {0}};//valores para XOR
+ */
+ vector<vector<double>> entradas =  {{1, 1}, {0, 1}, {1, 0}, {0, 0}};//valores para XOR
+  vector<vector<double>> esperados = {{1},    {0},    {0},    {1}};//valores para XOR
 
-  vector<double> entradas = {1, 1, 0};
-  Arede.feedFoward(entradas);
-
-  vector<double> esperados = {1};
-  Arede.backProp(esperados);
+  for (int i = 0; i < 40; i++) {
+      int ii = i%3;
+    Arede.feedFoward(entradas[ii]);
+    Arede.backProp(esperados[ii]); 
+  }
 
   vector<double> resultados;
-  Arede.getResults(resultados);
+  Arede.PegarResultados(resultados);
+  cout << resultados[0];
 
   return 0;
 }

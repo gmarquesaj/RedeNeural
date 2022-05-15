@@ -3,4 +3,4 @@ comp = clang++
 all:
 	clear
 	$(comp) main.cpp -o $(app) -O3
-	./$(app)
+	./$(app) > log.txt
