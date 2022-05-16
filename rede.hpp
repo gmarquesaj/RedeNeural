@@ -142,4 +142,21 @@ public:
       }
     }
   }
+  void teste(vector<vector<double>> &entradas,
+             vector<vector<double>> &esperados, bool treinar=true, int loops = 100) {
+    for (int i = 0; i < 4 * loops; i++) {
+      // int ii = rand() % 4;
+      //  cout <<"\n"<< ii<<"\n";
+      int ii = i % 4;
+      feedFoward(entradas[ii]);
+      vector<double> resultados;
+      PegarResultados(resultados);
+      cout << "\tX = " << entradas[ii][0] << " X2 = " << entradas[ii][1]
+           << " Esperado " << esperados[ii][0] << " Chute = " << resultados[0]
+           << " Erro = " << esperados[ii][0] - resultados[0] << "\n";
+      // cout << "\tAPRENDENDO..\n";
+      if (treinar)
+        backProp(esperados[ii]);
+    }
+  }
 };

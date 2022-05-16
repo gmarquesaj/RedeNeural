@@ -1,5 +1,4 @@
 app
 app_teste
-log.txt
+*.txt
 .vscode
-vareaveis.txt
