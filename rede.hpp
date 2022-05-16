@@ -20,10 +20,7 @@ public:
   double erroMedioRecente;
   double fatorDeErroRecente = 50.0;
   vector<Camada> Camadas;
- ~Rede()
- {
-   cout<<"-------\n";
- }
+  ~Rede() { cout << "-------\n"; }
   // CRIAR A REDE NEURAL
   Rede(const vector<unsigned int> &topologia) {
     int QntCamadas = topologia.size(); // QUANTAS CAMADAS TEM A REDE NEURAL
@@ -60,7 +57,7 @@ public:
       }
     }
   };
-  void backProp(const vector<double> &esperados) {
+  void backProp(const vector<double> &esperados, bool printar = false) {
     // CALCULAR ERRO
     Camada &Saida = Camadas.back();
     erro = 0.0;
@@ -70,15 +67,19 @@ public:
       // calcula o erro e adiciona ao erro total da REDE
       double erroNeuronio = esperados[i] - Saida[i].Saida;
       erro += erroNeuronio * erroNeuronio;
-      cout << "Chute " << Saida[i].Saida << " Esperado " << esperados[i]
-           << " erro  = " << erroNeuronio << "\n";
+      if (printar) {
+        cout << "\tChute " << Saida[i].Saida << " Esperado " << esperados[i]
+             << " erro  = " << erroNeuronio << "\n";
+      }
     }
     erro = sqrt(erro / (Saida.size() - 1)); // media RMS
     // medir media recente de precisao
     erroMedioRecente = (erroMedioRecente * fatorDeErroRecente + erro) /
                        (fatorDeErroRecente + 1.0);
-    cout << "RMS = " << erro << " ErroMedioRecente = " << erroMedioRecente
-         << "\n";
+    if (printar) {
+      cout << "\tRMS = " << erro << " ErroMedioRecente = " << erroMedioRecente
+           << "\n";
+    }
     // calcular grandiente da camada de saida
     for (int i = 0; i < Saida.size() - 1; i++) {
       Saida[i].calcGradiente(esperados[i]);
@@ -123,7 +124,7 @@ public:
     for (int i = 0; i < ncamadas; i++) {
       arq << Camadas[i].size() - 1 << " ";
     }
-    arq<< erro << " "<<erroMedioRecente <<" "<<fatorDeErroRecente;
+    arq << erro << " " << erroMedioRecente << " " << fatorDeErroRecente;
     arq << "\n";
     // arq << " # TOPOLOGIA\n";
     for (int c = 0; c < ncamadas; c++) {
@@ -141,5 +142,4 @@ public:
       }
     }
   }
-  
 };
