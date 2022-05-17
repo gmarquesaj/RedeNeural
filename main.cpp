@@ -1,6 +1,7 @@
 #include "neuronio.hpp"
 #include "rede.hpp"
 #include <cstdlib>
+#include <fstream>
 double Neuronio::eta = 0.15;
 double Neuronio::alpha = 0.5;
 void LerDoArquivo(Rede &Arede) {
@@ -38,18 +39,16 @@ void LerDoArquivo(Rede &Arede) {
 int main() {
   srand(time(NULL)); // RANDOMIZANDO SEED A CADA RODADA
   // TESTANDO A REDE
-  vector<unsigned int> topologia = {2, 4, 1};
+  vector<unsigned int> topologia = {3, 6, 1};
 
   Rede Arede(topologia);
- 
-  vector<vector<double>> entradas = {
-      {1, 1}, {0, 1}, {1, 0}, {0, 0}};                     // valores para XOR
-  vector<vector<double>> esperados = {{0}, {1}, {1}, {0}}; // valores para XOR
 
-  LerDoArquivo(Arede);
-  cout << "\n\n\nTESTANDO XOR \n";
-  Arede.teste(entradas,esperados,false,1);
+  vector<vector<double>> entradas = {{1,1,1},{0.5,0.5,0.5},{.2,.4,.8}};
+  vector<vector<double>> esperados = {{1},{0.5},{.4666666667}};
 
- //  Arede.SalvarParaArquivo();
+   cout << "\n\n\nTESTANDO IMAGENS \n";
+   Arede.teste(entradas,esperados,true,true,500);
+  //Arede.testeimg(entradas,esperados,false,50);
+
   return 0;
 }

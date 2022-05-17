@@ -38,9 +38,14 @@ public:
     }
   };
   void feedFoward(const vector<double> &entradas) {
-    assert(entradas.size() ==
-           Camadas[0].size() - 1); // GARANTE QUE OS DADOS DE ENTRADA TEM O
-                                   // MESMO TAMANHO Q A CAMADA QUE VAI RECEBER
+    if (entradas.size() != Camadas[0].size() - 1) {
+      cout << "DESLIGANDO POR TAMANHOS ERRADOS\n";
+      exit(0);
+    } else {
+      // cout<<"tamanho ok\n";
+    }
+    // assert(entradas.size() ==           Camadas[0].size() - 1); // GARANTE
+    // QUE OS DADOS DE ENTRADA TEM O MESMO TAMANHO Q A CAMADA QUE VAI RECEBER
     // copiando entrada para neuronios de entrada
     for (int i = 0; i < entradas.size(); i++) {
       Camadas[0][i].Saida = entradas[i];
@@ -143,20 +148,36 @@ public:
     }
   }
   void teste(vector<vector<double>> &entradas,
-             vector<vector<double>> &esperados, bool treinar=true, int loops = 100) {
-    for (int i = 0; i < 4 * loops; i++) {
+             vector<vector<double>> &esperados, bool treinar = true,
+             bool printar = true, int loops = 100) {
+    const int m = (entradas.size());
+    for (int i = 0; i <  loops; i++) {
       // int ii = rand() % 4;
       //  cout <<"\n"<< ii<<"\n";
-      int ii = i % 4;
+      int ii = i % m;
       feedFoward(entradas[ii]);
       vector<double> resultados;
       PegarResultados(resultados);
-      cout << "\tX = " << entradas[ii][0] << " X2 = " << entradas[ii][1]
-           << " Esperado " << esperados[ii][0] << " Chute = " << resultados[0]
-           << " Erro = " << esperados[ii][0] - resultados[0] << "\n";
-      // cout << "\tAPRENDENDO..\n";
+      if (printar) {
+        cout << "\t";
+        for (int x = 0; x < entradas[0].size(); x++) {
+          cout << " In" << x+1 << " = " << entradas[ii][x];
+        }
+        cout << " Esperado ";
+        for (int x = 0; x < esperados[ii].size(); x++) {
+          cout << " X" << x+1 << " = " << esperados[ii][x];
+        }
+        cout << " Chute ";
+        for (int x = 0; x < resultados.size(); x++) {
+          cout << " X" << x+1 << " = " << resultados[x] << " Err("
+               << esperados[ii][x] - resultados[x] << ")";
+        }
+        cout << "\n";
+      }
+
       if (treinar)
         backProp(esperados[ii]);
     }
   }
+  
 };
