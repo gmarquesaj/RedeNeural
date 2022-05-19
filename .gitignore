@@ -4,3 +4,4 @@ app_teste
 .vscode
 *.png
 *.ppm
+*.o

@@ -1,4 +1,4 @@
-#include "neuronio.hpp"
+
 #include "rede.hpp"
 #include <cstdlib>
 #include <fstream>
@@ -107,7 +107,7 @@ int main(int argc, char *argv[]) {
   }
   cout << "\n\n\nTESTANDO IMAGENS \n";
   cout << entradas.size();
-  Arede.teste(entradas, esperados, true, false, 1000);
+  Arede.Rodar(entradas, esperados, true, false, 1000);
   cout << "\nerro " << Arede.erro << " erro medio " << Arede.erroMedioRecente
        << "\n";
 
