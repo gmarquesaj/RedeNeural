@@ -13,11 +13,12 @@ public:
   double deltaPeso;
   Ligacao() {
     peso = double(rand() % 100) / 100.0;
+  
     deltaPeso = 0;
     cout << "Ligação criada com peso aleatorio = " << peso << " \n";
   };
   Ligacao(double peso,double delta) : peso(peso),deltaPeso(delta) {
-    cout << "Ligação criada com peso definido = " << peso << " \n";
+   // cout << "Ligação criada com peso definido = " << peso << " \n";
   };
 };
 

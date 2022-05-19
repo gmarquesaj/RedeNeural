@@ -2,3 +2,5 @@ app
 app_teste
 *.txt
 .vscode
+*.png
+*.ppm
